@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\DocumentController;
+use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\SignerController;
 use Illuminate\Support\Facades\Route;
 
@@ -41,6 +42,11 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/documents/{document}/send-invitations', [SignerController::class, 'sendInvitations'])->name('documents.send-invitations');
     Route::post('/documents/{document}/signers/{signer}/resend-invitation', [SignerController::class, 'resendInvitation'])->name('documents.resend-invitation');
     
+    // Profile Routes
+    Route::get('/profile', [ProfileController::class, 'show'])->name('profile.show');
+    Route::put('/profile', [ProfileController::class, 'update'])->name('profile.update');
+    Route::put('/profile/password', [ProfileController::class, 'updatePassword'])->name('profile.password.update');
+    
     // Logout Route
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 });
@@ -49,3 +55,16 @@ Route::middleware(['auth'])->group(function () {
 Route::get('/sign/{document}/{signer}', [SignerController::class, 'showSigningPage'])->name('sign.show');
 Route::post('/sign/{document}/{signer}', [SignerController::class, 'processSignature'])->name('sign.process');
 Route::post('/sign/{document}/{signer}/decline', [SignerController::class, 'declineSignature'])->name('sign.decline');
+
+// Test route for PDF flattening (remove in production)
+Route::get('/test-pdf/{document}', function (App\Models\Document $document, App\Services\PdfService $pdfService) {
+    $signedPath = $pdfService->flattenSignatures($document->id);
+    $auditPath = $pdfService->generateAuditTrailPdf($document->id);
+    
+    return response()->json([
+        'success' => true,
+        'signed_path' => $signedPath,
+        'audit_path' => $auditPath,
+        'signed_url' => $document->getSignedDocumentUrl(),
+    ]);
+})->middleware('auth');

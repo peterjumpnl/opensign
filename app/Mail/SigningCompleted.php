@@ -11,7 +11,7 @@ use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
 
-class SignerInvitation extends Mailable
+class SigningCompleted extends Mailable
 {
     use Queueable, SerializesModels;
 
@@ -30,32 +30,12 @@ class SignerInvitation extends Mailable
     public $document;
 
     /**
-     * The signing URL.
-     *
-     * @var string
-     */
-    public $signingUrl;
-    
-    /**
-     * Whether this is a reminder email.
-     *
-     * @var bool
-     */
-    public $isReminder;
-
-    /**
      * Create a new message instance.
      */
-    public function __construct(Signer $signer, Document $document, bool $isReminder = false)
+    public function __construct(Signer $signer, Document $document)
     {
         $this->signer = $signer;
         $this->document = $document;
-        $this->isReminder = $isReminder;
-        $this->signingUrl = route('sign.show', [
-            'signer' => $signer->id,
-            'document' => $document->id,
-            'token' => $signer->access_token
-        ]);
     }
 
     /**
@@ -63,12 +43,8 @@ class SignerInvitation extends Mailable
      */
     public function envelope(): Envelope
     {
-        $subject = $this->isReminder 
-            ? 'REMINDER: Document Signing Request: ' . $this->document->title
-            : 'Document Signing Request: ' . $this->document->title;
-            
         return new Envelope(
-            subject: $subject,
+            subject: $this->signer->name . ' has signed your document: ' . $this->document->title,
         );
     }
 
@@ -78,7 +54,7 @@ class SignerInvitation extends Mailable
     public function content(): Content
     {
         return new Content(
-            view: 'emails.signer-invitation',
+            view: 'emails.signing-completed',
         );
     }
 

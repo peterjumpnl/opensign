@@ -57,6 +57,7 @@ class DocumentController extends Controller
                 'file_path' => $filePath,
                 'file_name' => $file->getClientOriginalName(),
                 'file_size' => $file->getSize(),
+                'file_type' => $file->getClientMimeType(), // Add file_type
                 'user_id' => Auth::id(),
                 'status' => 'draft',
             ]);

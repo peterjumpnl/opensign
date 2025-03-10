@@ -12,10 +12,21 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('signers', function (Blueprint $table) {
-            $table->timestamp('viewed_at')->nullable()->after('last_reminded_at');
-            $table->timestamp('signed_at')->nullable()->after('viewed_at');
-            $table->timestamp('declined_at')->nullable()->after('signed_at');
-            $table->text('decline_reason')->nullable()->after('declined_at');
+            if (!Schema::hasColumn('signers', 'viewed_at')) {
+                $table->timestamp('viewed_at')->nullable()->after('last_reminded_at');
+            }
+            
+            if (!Schema::hasColumn('signers', 'signed_at')) {
+                $table->timestamp('signed_at')->nullable()->after('viewed_at');
+            }
+            
+            if (!Schema::hasColumn('signers', 'declined_at')) {
+                $table->timestamp('declined_at')->nullable()->after('signed_at');
+            }
+            
+            if (!Schema::hasColumn('signers', 'decline_reason')) {
+                $table->text('decline_reason')->nullable()->after('declined_at');
+            }
         });
     }
 

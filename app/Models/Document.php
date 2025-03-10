@@ -28,6 +28,7 @@ class Document extends Model
         'status',
         'expires_at',
         'completed_at',
+        'signed_file_path',
     ];
 
     /**
@@ -118,5 +119,17 @@ class Document extends Model
     public function isCancelled(): bool
     {
         return $this->status === 'cancelled';
+    }
+    
+    /**
+     * Get the URL to download the signed document.
+     */
+    public function getSignedDocumentUrl(): ?string
+    {
+        if (!$this->signed_file_path) {
+            return null;
+        }
+        
+        return url('storage/' . $this->signed_file_path);
     }
 }

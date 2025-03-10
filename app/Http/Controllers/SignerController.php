@@ -315,14 +315,20 @@ class SignerController extends Controller
                 // Update document status to completed
                 $document->update(['status' => 'completed']);
                 
-                // Generate final signed PDF
-                $this->generateSignedPDF($document);
+                // Generate final signed PDF with flattened signatures
+                $pdfService = app(PdfService::class);
+                $signedPdfPath = $pdfService->flattenSignatures($document->id);
                 
-                // Notify document owner
-                // $notificationService->sendDocumentCompletedNotification($document);
+                // Generate audit trail PDF
+                $auditPdfPath = $pdfService->generateAuditTrailPdf($document->id);
+                
+                // Notify document owner and all signers
+                // $notificationService = app(NotificationService::class);
+                // $notificationService->sendDocumentCompletedNotification($document, $signedPdfPath, $auditPdfPath);
             } else {
                 // Check if next signer should be notified
-                $this->notifyNextSigner($document, $signer);
+                $notificationService = app(NotificationService::class);
+                $this->notifyNextSigner($document, $signer, $notificationService);
             }
             
             // Commit the transaction
@@ -403,7 +409,7 @@ class SignerController extends Controller
     /**
      * Notify the next signer in the sequence.
      */
-    private function notifyNextSigner(Document $document, Signer $currentSigner)
+    private function notifyNextSigner(Document $document, Signer $currentSigner, NotificationService $notificationService)
     {
         // Get all signers ordered by order_index
         $signers = $document->signers()->orderBy('order_index')->get();
@@ -428,7 +434,6 @@ class SignerController extends Controller
         // Check if the next signer has already been invited or viewed the document
         if ($nextSigner->status === 'pending') {
             // Send invitation to the next signer
-            $notificationService = app(NotificationService::class);
             $notificationService->sendSignerInvitation($nextSigner, $document);
         }
     }

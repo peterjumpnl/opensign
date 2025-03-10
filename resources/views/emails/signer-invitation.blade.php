@@ -49,6 +49,12 @@
             padding: 15px;
             margin: 20px 0;
         }
+        .reminder {
+            background-color: #fef2f2;
+            border-left: 4px solid #ef4444;
+            padding: 15px;
+            margin: 20px 0;
+        }
     </style>
 </head>
 <body>
@@ -60,6 +66,13 @@
         
         <div class="content">
             <h2>Hello {{ $signer->name }},</h2>
+            
+            @if($isReminder)
+            <div class="reminder">
+                <h3>⚠️ Reminder: Your signature is still needed</h3>
+                <p>This is a friendly reminder that you have a pending document that requires your signature. Please take a moment to review and sign the document at your earliest convenience.</p>
+            </div>
+            @endif
             
             <p>You have been invited by {{ $document->user->name }} to sign a document:</p>
             
