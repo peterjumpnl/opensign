@@ -14,18 +14,6 @@
         </div>
     </div>
 
-    @if(session('success'))
-    <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-4">
-        {{ session('success') }}
-    </div>
-    @endif
-
-    @if(session('error'))
-    <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
-        {{ session('error') }}
-    </div>
-    @endif
-
     <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
         <div class="md:col-span-2">
             <div class="bg-white rounded-lg shadow-md p-6 mb-6">
@@ -77,7 +65,17 @@
                                                 {{ ucfirst($signer->status) }}
                                             </span>
                                         </td>
-                                        <td class="px-4 py-2 whitespace-nowrap text-sm">
+                                        <td class="px-4 py-2 whitespace-nowrap text-sm flex space-x-3">
+                                            <button 
+                                                type="button" 
+                                                class="text-blue-600 hover:text-blue-800 copy-link-btn flex items-center" 
+                                                data-url="{{ route('sign.show', [$document->id, $signer->id]) }}?token={{ $signer->access_token }}"
+                                                title="Copy signing link">
+                                                <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"></path>
+                                                </svg>
+                                                Copy Link
+                                            </button>
                                             <form action="{{ route('documents.signers.destroy', [$document->id, $signer->id]) }}" method="POST" class="inline">
                                                 @csrf
                                                 @method('DELETE')
@@ -204,6 +202,44 @@
                 orderInput.value = index + 1;
             });
         }
+        
+        // Copy link functionality
+        const copyButtons = document.querySelectorAll('.copy-link-btn');
+        copyButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                const url = this.getAttribute('data-url');
+                
+                // Create a temporary input element
+                const tempInput = document.createElement('input');
+                tempInput.value = url;
+                document.body.appendChild(tempInput);
+                
+                // Select and copy the text
+                tempInput.select();
+                document.execCommand('copy');
+                
+                // Remove the temporary element
+                document.body.removeChild(tempInput);
+                
+                // Visual feedback
+                const originalText = this.innerHTML;
+                this.innerHTML = `
+                    <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                    </svg>
+                    Copied!
+                `;
+                this.classList.remove('text-blue-600', 'hover:text-blue-800');
+                this.classList.add('text-green-600');
+                
+                // Reset after 2 seconds
+                setTimeout(() => {
+                    this.innerHTML = originalText;
+                    this.classList.remove('text-green-600');
+                    this.classList.add('text-blue-600', 'hover:text-blue-800');
+                }, 2000);
+            });
+        });
     });
 </script>
 @endsection

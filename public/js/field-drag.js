@@ -154,8 +154,32 @@ document.addEventListener('DOMContentLoaded', function() {
             const clientX = e.clientX || (e.changedTouches && e.changedTouches[0].clientX);
             const clientY = e.clientY || (e.changedTouches && e.changedTouches[0].clientY);
             
-            const relativeX = clientX - containerRect.left;
-            const relativeY = clientY - containerRect.top;
+            // Calculate the exact position where the mouse is
+            const exactX = clientX - containerRect.left;
+            const exactY = clientY - containerRect.top;
+            
+            // Calculate field center position (instead of using offset)
+            let fieldWidth, fieldHeight;
+            const fieldType = draggedElement.getAttribute('data-field-type');
+            
+            // Get dimensions based on field type
+            if (fieldType === 'signature') {
+                fieldWidth = 200;
+                fieldHeight = 60;
+            } else if (fieldType === 'initial') {
+                fieldWidth = 100;
+                fieldHeight = 60;
+            } else if (fieldType === 'date') {
+                fieldWidth = 150;
+                fieldHeight = 40;
+            } else if (fieldType === 'checkbox') {
+                fieldWidth = 40;
+                fieldHeight = 40;
+            }
+            
+            // Calculate position so the field is centered on the cursor
+            const relativeX = exactX - (fieldWidth / 2);
+            const relativeY = exactY - (fieldHeight / 2);
             
             // If this is a new field (from palette)
             if (draggedElement.parentNode === document.body) {
@@ -163,13 +187,12 @@ document.addEventListener('DOMContentLoaded', function() {
                 document.body.removeChild(draggedElement);
                 
                 // Create a new field in the overlay
-                const fieldType = draggedElement.getAttribute('data-field-type');
                 const newField = createDraggableField(fieldType);
                 
                 // Position the new field
                 newField.style.position = 'absolute';
-                newField.style.left = (relativeX - offsetX) + 'px';
-                newField.style.top = (relativeY - offsetY) + 'px';
+                newField.style.left = relativeX + 'px';
+                newField.style.top = relativeY + 'px';
                 
                 // Add to overlay
                 fieldOverlay.appendChild(newField);
@@ -193,8 +216,8 @@ document.addEventListener('DOMContentLoaded', function() {
                 });
             } else {
                 // Update position of existing field
-                draggedElement.style.left = (relativeX - offsetX) + 'px';
-                draggedElement.style.top = (relativeY - offsetY) + 'px';
+                draggedElement.style.left = relativeX + 'px';
+                draggedElement.style.top = relativeY + 'px';
                 
                 // Update in placed fields array
                 const fieldId = draggedElement.id;

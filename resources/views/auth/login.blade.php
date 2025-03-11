@@ -64,23 +64,6 @@
                         Sign in with Google
                     </a>
                 </div>
-
-                <div class="mt-6">
-                    <div class="relative">
-                        <div class="absolute inset-0 flex items-center">
-                            <div class="w-full border-t border-gray-300"></div>
-                        </div>
-                        <div class="relative flex justify-center text-sm">
-                            <span class="bg-white px-2 text-gray-500">Or continue as guest</span>
-                        </div>
-                    </div>
-
-                    <div class="mt-6">
-                        <a href="#" class="flex w-full justify-center rounded-md border border-gray-300 bg-white py-2 px-4 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50">
-                            View Demo
-                        </a>
-                    </div>
-                </div>
             </div>
         </div>
 

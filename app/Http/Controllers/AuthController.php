@@ -54,8 +54,8 @@ class AuthController extends Controller
             // Log the user in
             Auth::login($user);
             
-            // Redirect to dashboard or home page
-            return redirect()->route('dashboard')->with('success', 'Successfully logged in with Google!');
+            // Redirect to dashboard or home page without success message
+            return redirect()->route('dashboard');
             
         } catch (Exception $e) {
             // Log the error

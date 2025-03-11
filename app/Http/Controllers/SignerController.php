@@ -221,6 +221,7 @@ class SignerController extends Controller
             
             // Log the view in audit log
             $signer->auditLogs()->create([
+                'event' => 'document_viewed',
                 'action' => 'viewed',
                 'ip_address' => $request->ip(),
                 'user_agent' => $request->userAgent(),
@@ -298,6 +299,7 @@ class SignerController extends Controller
             
             // Log the signing in audit log
             $signer->auditLogs()->create([
+                'event' => 'document_signed',
                 'action' => 'signed',
                 'ip_address' => $request->ip(),
                 'user_agent' => $request->userAgent(),
@@ -367,6 +369,7 @@ class SignerController extends Controller
         
         // Log the decline in audit log
         $signer->auditLogs()->create([
+            'event' => 'document_declined',
             'action' => 'declined',
             'ip_address' => $request->ip(),
             'user_agent' => $request->userAgent(),

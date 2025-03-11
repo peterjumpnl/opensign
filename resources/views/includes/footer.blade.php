@@ -12,26 +12,6 @@
                     Secure document signing platform
                 </p>
             </div>
-            
-            <div class="flex flex-col md:flex-row md:space-x-8">
-                <div class="mb-4 md:mb-0">
-                    <h3 class="text-sm font-semibold text-gray-900 uppercase tracking-wider">Resources</h3>
-                    <div class="mt-2 space-y-2">
-                        <a href="#" class="text-sm text-gray-600 hover:text-indigo-600">Help Center</a><br>
-                        <a href="#" class="text-sm text-gray-600 hover:text-indigo-600">API Documentation</a><br>
-                        <a href="#" class="text-sm text-gray-600 hover:text-indigo-600">Pricing</a>
-                    </div>
-                </div>
-                
-                <div>
-                    <h3 class="text-sm font-semibold text-gray-900 uppercase tracking-wider">Legal</h3>
-                    <div class="mt-2 space-y-2">
-                        <a href="#" class="text-sm text-gray-600 hover:text-indigo-600">Privacy Policy</a><br>
-                        <a href="#" class="text-sm text-gray-600 hover:text-indigo-600">Terms of Service</a><br>
-                        <a href="#" class="text-sm text-gray-600 hover:text-indigo-600">Cookie Policy</a>
-                    </div>
-                </div>
-            </div>
         </div>
         
         <div class="mt-8 border-t border-gray-200 pt-6">
